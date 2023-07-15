@@ -9,22 +9,24 @@ var rl = readline.createInterface({
 let com_num = new Array() //컴퓨터가 랜덤으로 숫자를 생성하여 저장하는 배열
 let user_num = new Array()//사용자가 입력하는 숫자 배열
 let count = 1 //사용자 시도 횟수
-let temp_i = 0 //컴퓨터가 랜덤한 숫자 3개 뽑는 데 필요한 변수
 
-//컴퓨터가 랜덤한 서로 다른 숫자 3개 뽑기
-while(temp_i < 3){
-    temp = Math.floor(Math.random() * 10)
-    if(com_num.includes(String(temp)) === false){
-        com_num.push(String(temp))
-        temp_i++
-        continue
+//컴퓨터가 랜덤으로 서로 다른 세 숫자를 뽑는 함수
+function chooseComNum(){
+    let temp_i = 0 //컴퓨터가 랜덤한 숫자 3개 뽑는 데 필요한 변수
+
+    //컴퓨터가 랜덤한 서로 다른 숫자 3개 뽑기
+    while(temp_i < 3){
+        temp = Math.floor(Math.random() * 10)
+        if(com_num.includes(String(temp)) === false){
+            com_num.push(String(temp))
+            temp_i++
+            continue
+        }
+        else continue
     }
-    else continue
+    
+    console.log("컴퓨터가 숫자를 생성하였습니다. 답을 맞춰보세요!")
 }
-
-console.log("컴퓨터가 숫자를 생성하였습니다. 답을 맞춰보세요!")
-process.stdout.write(count+"번째 도전 : ")
-
 
 //isBall함수 (answer = 컴퓨터의 번호 / input_num : 찾아볼 하나의 숫자 / index : 사용자 입력숫자가 몇번째 인덱스에 있는지)
 function isBall(answer, input_num,index){
@@ -71,49 +73,56 @@ function isNumber(target){
     return result
 }
 
+//게임 동작 함수 init_game
+function init_game(){
+    chooseComNum()
+    process.stdout.write(count+"번째 도전 : ")
 
-rl.on('line', (num) => {
-    //사용자가 입력한 값이 세 자리가 아닐 때
-    if(num.length !==3){
-        console.log("잘못 입력하셨습니다.")
-        console.log("세 개의 숫자를 입력해주세요.")
-        process.stdout.write(count+"번째 도전 : ")
-    }
-    //사용자가 입력한 값이 숫자가 아닐 때
-    else if(isNumber(num) === false){
-        console.log("잘못 입력하셨습니다.")
-        console.log("숫자를 입력해주세요.")
-        process.stdout.write(count+"번째 도전 : ")
-    }
-
-    //사용자가 입력한 값에 중복된 숫자가 있을 때
-    else if(num[0] === num[1] || num[1] === num[2] || num[0] === num[3]){
-        console.log("잘못 입력하셨습니다.")
-        console.log("서로 다른 세 숫자를 입력해주세요.")
-        process.stdout.write(count+"번째 도전 : ")
-    }
-
-    else{
-        //입력값을 문자로 변환
-        num = String(num)
-        user_num.splice(0,3)
-        for(let i=0;i<3;i++){
-            user_num.push(num[i])
-        }
-
-        //사용자가 입력한 값이 정답이라면 3S를 출력하고 while문 빠져나가 게임 종료
-        if(calculate(com_num, user_num) == true) {
-            console.log("3S")
-            console.log(count+"번만에 맞히셨습니다.")
-            console.log("게임을 종료합니다.")
-            rl.close();
-        }
-
-        //사용자가 입력한 값과 정답이 일치하지 않는다면 계산결과를 반환하는 calculate함수 반환
-        else{
-            console.log(calculate(com_num, user_num))
-            count++
+    rl.on('line', (num) => {
+        //사용자가 입력한 값이 세 자리가 아닐 때
+        if(num.length !==3){
+            console.log("잘못 입력하셨습니다.")
+            console.log("세 개의 숫자를 입력해주세요.")
             process.stdout.write(count+"번째 도전 : ")
         }
-    }
-})
+        //사용자가 입력한 값이 숫자가 아닐 때
+        else if(isNumber(num) === false){
+            console.log("잘못 입력하셨습니다.")
+            console.log("숫자를 입력해주세요.")
+            process.stdout.write(count+"번째 도전 : ")
+        }
+    
+        //사용자가 입력한 값에 중복된 숫자가 있을 때
+        else if(num[0] === num[1] || num[1] === num[2] || num[0] === num[3]){
+            console.log("잘못 입력하셨습니다.")
+            console.log("서로 다른 세 숫자를 입력해주세요.")
+            process.stdout.write(count+"번째 도전 : ")
+        }
+    
+        else{
+            //입력값을 문자로 변환
+            num = String(num)
+            user_num.splice(0,3)
+            for(let i=0;i<3;i++){
+                user_num.push(num[i])
+            }
+    
+            //사용자가 입력한 값이 정답이라면 3S를 출력하고 while문 빠져나가 게임 종료
+            if(calculate(com_num, user_num) == true) {
+                console.log("3S")
+                console.log(count+"번만에 맞히셨습니다.")
+                console.log("게임을 종료합니다.")
+                rl.close();
+            }
+    
+            //사용자가 입력한 값과 정답이 일치하지 않는다면 계산결과를 반환하는 calculate함수 반환
+            else{
+                console.log(calculate(com_num, user_num))
+                count++
+                process.stdout.write(count+"번째 도전 : ")
+            }
+        }
+    })
+}
+
+init_game()
